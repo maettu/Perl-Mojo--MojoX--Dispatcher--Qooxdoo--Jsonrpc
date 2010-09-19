@@ -80,18 +80,18 @@ sub handle_request {
     
     
     if ($@){ 
-    for (ref $@){
-        /HASH/ && do {
-            $reply = $json->encode({error => {origin => 1, message => $@->{message}, code=>$@->{code}}, id => $id});
-            last;
-        };
-        /.+/ && do {
-            $reply = $json->encode({error => {origin => 1, message => $@->message(), code=>$@->code()}, id => $id});
-            last;
-        };
-        $reply = $json->encode({error => {origin => 1, message => "error while processing ${package}::$method: $@", code=> '9838'}, id => $id});
+        for (ref $@){
+            /HASH/ && do {
+                $reply = $json->encode({error => {origin => 1, message => $@->{message}, code=>$@->{code}}, id => $id});
+                last;
+            };
+            /.+/ && do {
+                $reply = $json->encode({error => {origin => 1, message => $@->message(), code=>$@->code()}, id => $id});
+                last;
+            };
+            $reply = $json->encode({error => {origin => 1, message => "error while processing ${package}::$method: $@", code=> '9838'}, id => $id});
+        }
     }
-
     # no error occurred
     else{
         $reply = $json->encode({id => $id, result => $reply});
