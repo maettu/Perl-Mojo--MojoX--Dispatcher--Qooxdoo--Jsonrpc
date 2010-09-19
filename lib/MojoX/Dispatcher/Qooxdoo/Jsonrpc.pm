@@ -77,20 +77,21 @@ sub handle_request {
         no strict 'refs';
         $reply = $services->{$package}->$method(@params);
     };
-    if ($@){  
-        # error is an object 
-        #   which must contain 'code' (qooxdoo error code) and 'message'
-        if (ref $@){ 
-            # qooxdoo expects a json
-            $reply = $json->encode({error => {origin => 1, message => $@->message(), code=>$@->code()}, id => $id});
-        }
-        
-        # error is a string 
-        else{
-            $reply = $json->encode({error => {origin => 1, message => "error while processing ${package}::$method: $@", code=> '9838'}, id => $id});
-        }
-    }
     
+    
+    if ($@){ 
+    for (ref $@){
+        /HASH/ && do {
+            $reply = $json->encode({error => {origin => 1, message => $@->{message}, code=>$@->{code}}, id => $id});
+            last;
+        };
+        /.+/ && do {
+            $reply = $json->encode({error => {origin => 1, message => $@->message(), code=>$@->code()}, id => $id});
+            last;
+        };
+        $reply = $json->encode({error => {origin => 1, message => "error while processing ${package}::$method: $@", code=> '9838'}, id => $id});
+    }
+
     # no error occurred
     else{
         $reply = $json->encode({id => $id, result => $reply});
@@ -112,7 +113,7 @@ sub _send_reply{
     $self->render(text => $reply);
 }
 
-1
+1;
 
 
 
@@ -195,15 +196,48 @@ Our "Test"-service could look like:
     # uncomment if you want to die without further handling
     # die;
     
-    # uncomment if you want to die with a message
+    # uncomment if you want to die with a message in a hash
     # die {code => 20, message => "Test died on purpose :-)"};
+    
+    
+    # uncomment if you want to die with your homemade error object 
+    # (simple example see below)
+    # better use your elaborate error handling instead!
+    
+    # require Error;
+    # my $error = new Error();
+    # die $error;
     
     my $result =  $params[0] + $params[1]
     return $result;
     
  }
 
- 1
+ 1;
+ 
+ 
+ # Example of simple and stupid Error class:
+ 
+ package Error;
+
+ sub new{
+    my $class = shift;
+    
+    my $error = {};
+    
+    bless $error, $class;
+    return $error;
+ }
+
+ sub message{
+    return "stupid error message";
+ }
+
+ sub code{
+    return "934857"; # no real error code here
+ }
+
+1;
 
 Please create a constructor (like "new" here) which instantiates an object because we are going to use this in
 our 'lib/qooxdooserver.pm' below.
