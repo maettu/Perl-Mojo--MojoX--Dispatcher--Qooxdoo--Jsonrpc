@@ -50,7 +50,7 @@ sub handle_request {
     $package = $data->{service};
     
     if (not exists $services->{$package}){
-        $reply = $json->encode({error => {origin => 1, message => "Service $package not available", code=> '9838'}, id => $id});
+        $reply = $json->encode({error => {origin => 1, message => "Service $package not available", code=> '3'}, id => $id});
         _send_reply($reply, $id, $cross_domain, $self) and return;
     }
     
@@ -58,13 +58,13 @@ sub handle_request {
     $method = $data->{method};
     
     if ($method =~ /^_/){
-        $reply = $json->encode({error => {origin => 1, message => "private method ${package}::$method not accessible", code=> '9838'}, id => $id});
+        $reply = $json->encode({error => {origin => 1, message => "private method ${package}::$method not accessible", code=> '2'}, id => $id});
         _send_reply($reply, $id, $cross_domain, $self) and return;
     }
     
-    # Check if method is 
+    # Check if method only consists of letters and underscore (not leading!)
     if ($method !~ /^[a-zA-Z_]+$/){
-        $reply = $json->encode({error => {origin => 1, message => "methods should only contain a-z, A-Z and _, $method is forbidden", code=> '9838'}, id => $id});
+        $reply = $json->encode({error => {origin => 1, message => "methods should only contain a-z, A-Z and _, $method is forbidden", code=> '1'}, id => $id});
         _send_reply($reply, $id, $cross_domain, $self) and return;
     }
     
@@ -82,14 +82,14 @@ sub handle_request {
     if ($@){ 
         for (ref $@){
             /HASH/ && do {
-                $reply = $json->encode({error => {origin => 1, message => $@->{message}, code=>$@->{code}}, id => $id});
+                $reply = $json->encode({error => {origin => 2, message => $@->{message}, code=>$@->{code}}, id => $id});
                 last;
             };
             /.+/ && do {
-                $reply = $json->encode({error => {origin => 1, message => $@->message(), code=>$@->code()}, id => $id});
+                $reply = $json->encode({error => {origin => 2, message => $@->message(), code=>$@->code()}, id => $id});
                 last;
             };
-            $reply = $json->encode({error => {origin => 1, message => "error while processing ${package}::$method: $@", code=> '9838'}, id => $id});
+            $reply = $json->encode({error => {origin => 2, message => "error while processing ${package}::$method: $@", code=> '9999'}, id => $id});
         }
     }
     # no error occurred
