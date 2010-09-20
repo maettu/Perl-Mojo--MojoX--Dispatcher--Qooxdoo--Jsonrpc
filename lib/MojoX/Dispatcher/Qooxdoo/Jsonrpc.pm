@@ -298,7 +298,7 @@ Then add some lines to make it look like this:
 =head1 AUTHOR
 
 Matthias Bloch, <lt>matthias at puffin ch<gt>
-This Module sponsored by OETIKER+PARTNER AG
+This Module is sponsored by OETIKER+PARTNER AG
 
 =head1 COPYRIGHT AND LICENSE
 
