@@ -3,27 +3,30 @@ package qooxdooserver;
 use strict;
 use warnings;
 
- use RpcService::Test;
- 
- sub startup {
+use RpcService::Test;
+
+use base 'Mojolicious';
+
+# This method will run once at server start
+sub startup {
     my $self = shift;
     
-    # instantiate all services
     my $services= {
         Test => new RpcService::Test(),
-        
+        # more services here
     };
     
-    
-    # add a route to the Qooxdoo dispatcher and route to it
+    # tell Mojo about your services:
     my $r = $self->routes;
-    $r->route('/qooxdoo') ->
-            to('
-                Jsonrpc#handle_request', 
-                services => $services, 
-                namespace => 'MojoX::Dispatcher::Qooxdoo'
-            );
-        
- }
+    
+    # this sends all requests for "/qooxdoo" in your Mojo server to our little dispatcher
+    # change this at your own taste.
+    $r->route('/qooxdoo')->to('
+        jsonrpc#handle_request', 
+        services => $services, 
+        namespace => 'MojoX::Dispatcher::Qooxdoo'
+    );
+    
+}
 
 1;

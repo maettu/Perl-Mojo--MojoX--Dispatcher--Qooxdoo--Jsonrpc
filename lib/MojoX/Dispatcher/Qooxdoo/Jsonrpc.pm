@@ -159,8 +159,9 @@ a (hopefully) valid json reply.
 
 =head1 EXAMPLE 
 
-This example exposes a service named "Test" in a folder "qooxdoo-services".
-The Mojo application is named "qooxdooserver".
+This example exposes a service named "Test" in a folder "RpcService".
+The Mojo application is named "qooxdooserver". The scripts are in
+the 'example' directory.
 First create this application using "mojolicious generate app qooxdooserver".
 
 Then, lets write the service:
@@ -252,9 +253,10 @@ Then add some lines to make it look like this:
 
  package qooxdooserver;
 
- # perhaps this is wise for a server..
  use strict;
  use warnings;
+ 
+ use RpcService::Test;
 
  use base 'Mojolicious';
 
@@ -262,21 +264,12 @@ Then add some lines to make it look like this:
  sub startup {
     my $self = shift;
     
-    # use your services' directory
-    use lib ('qooxdoo-services');
-    
-    # use our Test service
-    use Test;
-    
-    # instantiate objects
     my $services= {
-        Test => new Test(),
-        
-        # add more constructors of services here..
+        Test => new RpcService::Test(),
+        # more services here
     };
     
     # tell Mojo about your services:
-   
     my $r = $self->routes;
     
     # this sends all requests for "/qooxdoo" in your Mojo server to our little dispatcher
@@ -286,6 +279,7 @@ Then add some lines to make it look like this:
         services => $services, 
         namespace => 'MojoX::Dispatcher::Qooxdoo'
     );
+    
  }
 
  1;
