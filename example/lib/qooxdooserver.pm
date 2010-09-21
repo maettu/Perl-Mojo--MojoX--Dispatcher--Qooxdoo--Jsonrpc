@@ -19,7 +19,8 @@ sub startup {
     # tell Mojo about your services:
     my $r = $self->routes;
     
-    # this sends all requests for "/qooxdoo" in your Mojo server to our little dispatcher
+    # this sends all requests for "/qooxdoo" in your 
+    # Mojo server to our little dispatcher
     # change this at your own taste.
     $r->route('/qooxdoo')->to('
         jsonrpc#handle_request', 
