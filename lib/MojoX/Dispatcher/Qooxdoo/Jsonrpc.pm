@@ -6,14 +6,14 @@ use warnings;
 use Mojo::JSON;
 use base 'Mojolicious::Controller';
 
-our $VERSION = '0.51';
+our $VERSION = '0.53';
 
 sub handle_request {
     my $self = shift;
     
     my ($package, $method, @params, $id, $cross_domain, $data, $reply, $error);
     
-    my $debug = 1;
+    my $debug = 0;
 
     # instantiate a JSON encoder - decoder object.
     my $json = Mojo::JSON->new;
@@ -51,7 +51,8 @@ sub handle_request {
     
     if (not exists $services->{$package}){
         $reply = $json->encode({error => {origin => 1, message => "Service $package not available", code=> '3'}, id => $id});
-        _send_reply($reply, $id, $cross_domain, $self) and return;
+        _send_reply($reply, $id, $cross_domain, $self);
+        return;
     }
     
     # Check if method is not private (marked with a leading underscore)
@@ -59,13 +60,15 @@ sub handle_request {
     
     if ($method =~ /^_/){
         $reply = $json->encode({error => {origin => 1, message => "private method ${package}::$method not accessible", code=> '2'}, id => $id});
-        _send_reply($reply, $id, $cross_domain, $self) and return;
+        _send_reply($reply, $id, $cross_domain, $self);
+        return;
     }
     
     # Check if method only consists of letters and underscore (not leading!)
     if ($method !~ /^[a-zA-Z_]+$/){
         $reply = $json->encode({error => {origin => 1, message => "methods should only contain a-z, A-Z and _, $method is forbidden", code=> '1'}, id => $id});
-        _send_reply($reply, $id, $cross_domain, $self) and return;
+        _send_reply($reply, $id, $cross_domain, $self);
+        return;
     }
     
     
@@ -201,8 +204,8 @@ Our "Test"-service could look like:
     # (simple example see below)
     # better use your elaborate error handling instead!
     
-    # require Error;
-    # my $error = new Error();
+    # use Error;
+    # my $error = new Error('stupid error message', '56457');
     # die $error;
     
     my $result =  $params[0] + $params[1]
@@ -220,18 +223,23 @@ Our "Test"-service could look like:
  sub new{
     my $class = shift;
     
-    my $error = {};
+    my $error = {
+        message => shift;
+        code    => shift;
+    };
     
     bless $error, $class;
     return $error;
  }
 
  sub message{
-    return "stupid error message";
+    my $self = shift;
+    return $self->{message};
  }
 
  sub code{
-    return "934857"; # no real error code here
+    my $self = shift;
+    return $self->{code};
  }
 
 1;
