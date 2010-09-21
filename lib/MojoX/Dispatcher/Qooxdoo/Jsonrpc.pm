@@ -124,19 +124,15 @@ MojoX::Dispatcher::Qooxdoo::Jsonrpc - Dispatcher for Qooxdoo Json Rpc Calls
 =head1 SYNOPSIS
 
  # lib/your-application.pm
+ 
+ use RpcService::Test;
+ 
  sub startup {
     my $self = shift;
-
-    # choose your directory for services:
-    use lib ('qooxdoo-services'); 
-    
-    # use all services you want to use
-    # (and omit everything you don't want to expose)
-    use Test;
     
     # instantiate all services
     my $services= {
-        Test => new Test(),
+        Test => new RpcService::Test(),
         
     };
     
@@ -174,7 +170,7 @@ dir named 'qooxdoo-services' for the services you want to expose.
 
 Our "Test"-service could look like:
 
- package Test;
+ package RpcService::Test;
 
  sub new{
     my $class = shift;
