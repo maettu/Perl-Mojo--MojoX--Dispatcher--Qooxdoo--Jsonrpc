@@ -349,6 +349,16 @@ Then add some lines to make it look like this:
 Now start your Mojo Server by issuing 'script/qooxdooserver daemon'. 
 If you want to change any options, type 'script/qooxdooserver help'. 
 
+=head2 Security
+MojoX::Dispatcher::Qooxdoo::Jsonrpc only allows methods matching
+this pattern: /^[a-zA-Z_]+$/
+This means you are allowed to use letters and the underscore.
+Be aware that methods starting with an underscore are private by
+convention and not exposed.
+
+Only services explicitly loaded in lib/your-application.pm
+will be accessible.
+
 
 =head1 AUTHOR
 
