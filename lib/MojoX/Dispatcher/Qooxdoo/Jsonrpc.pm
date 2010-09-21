@@ -145,8 +145,9 @@ MojoX::Dispatcher::Qooxdoo::Jsonrpc - Dispatcher for Qooxdoo Json Rpc Calls
     $r->route('/qooxdoo') ->
             to('
                 Jsonrpc#handle_request', 
-                services => $services, 
-                namespace => 'MojoX::Dispatcher::Qooxdoo'
+                services    => $services, 
+                debug       => 0,
+                namespace   => 'MojoX::Dispatcher::Qooxdoo'
             );
         
  }
@@ -284,13 +285,17 @@ Then add some lines to make it look like this:
     # change this at your own taste.
     $r->route('/qooxdoo')->to('
         jsonrpc#handle_request', 
-        services => $services, 
-        namespace => 'MojoX::Dispatcher::Qooxdoo'
+        services    => $services, 
+        debug       => 0,
+        namespace   => 'MojoX::Dispatcher::Qooxdoo'
     );
     
  }
 
  1;
+
+Now start your Mojo Server by issuing 'script/qooxdooserver daemon'. 
+If you want to change any options, type 'script/qooxdooserver help'. 
 
 
 =head1 AUTHOR
