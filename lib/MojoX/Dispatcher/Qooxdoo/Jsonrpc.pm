@@ -13,7 +13,7 @@ sub handle_request {
     
     my ($package, $method, @params, $id, $cross_domain, $data, $reply, $error);
     
-    my $debug = 0;
+    my $debug = $self->stash('debug');
 
     # instantiate a JSON encoder - decoder object.
     my $json = Mojo::JSON->new;

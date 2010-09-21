@@ -23,8 +23,9 @@ sub startup {
     # change this at your own taste.
     $r->route('/qooxdoo')->to('
         jsonrpc#handle_request', 
-        services => $services, 
-        namespace => 'MojoX::Dispatcher::Qooxdoo'
+        services    => $services, 
+        debug       => 0,
+        namespace   => 'MojoX::Dispatcher::Qooxdoo'
     );
     
 }
