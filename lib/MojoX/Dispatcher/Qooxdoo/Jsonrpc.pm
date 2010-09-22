@@ -206,6 +206,17 @@ L<MojoX::Dispatcher::Qooxdoo::Jsonrpc> dispatches incoming
 rpc requests from a qooxdoo application to your services and renders
 a (hopefully) valid json reply.
 
+Qooxdoo (L<www.qooxdoo.org>) is a JavaScript framework for writing
+self-contained applications, running on all the major browser also
+known as Rich Internet Applications or RIA.
+
+In a spirit similar to perl OO modules, qooxdoo enhances the
+JavaScript language by many language elements makeing the
+development of complex applications a lot more fun.
+
+Qooxdoo is backend agnostic. This module implements a Qooxdo JSON-RPC
+backend within the Mojo framework.
+
 
 =head1 EXAMPLE 
 
