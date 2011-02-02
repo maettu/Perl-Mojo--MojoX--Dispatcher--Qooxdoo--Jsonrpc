@@ -8,3 +8,6 @@ Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
 0.52	Mon Sep 20 2010
 	- POD improvements, error codes, fixes
+    
+0.53    Thu Sep 21 2010
+    - POD, fixes
