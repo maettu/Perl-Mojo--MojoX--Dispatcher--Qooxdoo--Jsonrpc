@@ -211,7 +211,7 @@ self-contained applications, running on all the major browser also
 known as Rich Internet Applications or RIA.
 
 In a spirit similar to perl OO modules, qooxdoo enhances the
-JavaScript language by many language elements makeing the
+JavaScript language by many language elements making the
 development of complex applications a lot more fun.
 
 Qooxdoo is backend agnostic. This module implements a Qooxdo JSON-RPC
