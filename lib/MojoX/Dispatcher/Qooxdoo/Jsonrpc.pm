@@ -8,7 +8,7 @@ use base 'Mojolicious::Controller';
 
 our $VERSION = '0.53';
 
-sub handle_request {
+sub dispatch {
     my $self = shift;
     
     my ($package, $method, @params, $id, $cross_domain, $data, $reply, $error);
@@ -31,10 +31,10 @@ sub handle_request {
     
     # cross-domain GET requests
     elsif ($self->req->method eq 'GET'){
-        $data           = $json->decode(
-                                $self->param('_ScriptTransport_data')
-                            );
-        $id             = $self->param('_ScriptTransport_id');
+        $data= $json->decode(
+            $self->param('_ScriptTransport_data')
+        );
+        $id = $self->param('_ScriptTransport_id') ;
         $cross_domain   = 1;
     }
     else{
@@ -46,13 +46,19 @@ sub handle_request {
         # "Transport error 0: Unknown status code" in qooxdoo
         return;
     }
-    
+        
+    if (not defined $id){
+        $self->app->log->fatal("This is not a JsonRPC request.");
+        return;
+    }
+
     # Getting available services from stash
     my $services = $self->stash('services');
-    
+
     # Check if desired service is available
     $package = $data->{service};
-    
+
+
     if (not exists $services->{$package}){
         $reply = $json->
             encode({
@@ -102,6 +108,28 @@ sub handle_request {
     
     # invocation of method in class according to request 
     eval{
+        # make sure there are not foreign signal handlers
+        # messing with our problems
+        local $SIG{__DIE__};
+        local $SIG{__WARN__};
+        if ($services->{$package}->can('_mojo_session')){
+            # initialize session if it does not exists yet
+            my $session = $self->stash->{'mojo.session'} ||= {};
+            $services->{$package}->_mojo_session($session);
+        }
+        if ($services->{$package}->can('_mojo_stash')){
+            # initialize session if it does not exists yet
+            $services->{$package}->_mojo_stash($self->stash);
+        }
+        if ($services->{$package}->can('_check_access')){
+            if ( not $services->{$package}->_check_access($method) ){
+	        die { 
+                 origin => 1, 
+	            message => "Permission denied. Access to method $method is denied.",
+                    code=> 1
+                }
+            }
+        }
         no strict 'refs';
         $reply = $services->{$package}->$method(@params);
     };
@@ -173,24 +201,25 @@ MojoX::Dispatcher::Qooxdoo::Jsonrpc - Dispatcher for Qooxdoo Json Rpc Calls
 =head1 SYNOPSIS
 
  # lib/your-application.pm
+
+ use base 'Mojolicious';
  
- use RpcService::Test;
- 
+ use RpcService;
+
  sub startup {
     my $self = shift;
     
     # instantiate all services
     my $services= {
-        Test => new RpcService::Test(),
+        Test => RpcService->new(),
         
     };
     
     
     # add a route to the Qooxdoo dispatcher and route to it
     my $r = $self->routes;
-    $r->route('/qooxdoo') ->
-            to('
-                Jsonrpc#handle_request', 
+    $r->route('/qooxdoo') -> to(
+                'Jsonrpc#dispatch', 
                 services    => $services, 
                 debug       => 0,
                 namespace   => 'MojoX::Dispatcher::Qooxdoo'
@@ -205,17 +234,6 @@ MojoX::Dispatcher::Qooxdoo::Jsonrpc - Dispatcher for Qooxdoo Json Rpc Calls
 L<MojoX::Dispatcher::Qooxdoo::Jsonrpc> dispatches incoming
 rpc requests from a qooxdoo application to your services and renders
 a (hopefully) valid json reply.
-
-Qooxdoo (L<www.qooxdoo.org>) is a JavaScript framework for writing
-self-contained applications, running on all the major browser also
-known as Rich Internet Applications or RIA.
-
-In a spirit similar to perl OO modules, qooxdoo enhances the
-JavaScript language by many language elements making the
-development of complex applications a lot more fun.
-
-Qooxdoo is backend agnostic. This module implements a Qooxdo JSON-RPC
-backend within the Mojo framework.
 
 
 =head1 EXAMPLE 
@@ -234,16 +252,24 @@ for the services you want to expose.
 
 Our "Test"-service could look like:
 
- package RpcService::Test;
+ package RpcService;
 
- sub new{
-    my $class = shift;
-    
-    my $object = {
-        
-    };
-    bless $object, $class;
-    return $object;
+ use base qw(Mojo::Base);
+
+ # if this attribute is created it will hold the mojo cookie session hash
+ __PACKAGE__->attr('_mojo_session');
+ # if this attribute exists it will provide access to the stash
+ __PACKAGE__->attr('_mojo_stash');
+ 
+ # optional access_check method the method is called right before the actual
+ # method is called but after the _mojo_session and _mojo_stash properties
+ # are assigned
+
+ sub _check_access {
+    my $self = shift;
+    my $method = shift;          
+    # check if we can access
+    return 1; # if ok
  }
 
  sub add{
