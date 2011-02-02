@@ -1,62 +1,69 @@
-package RpcService::Test;
+package JsonRpcService;
+use strict;
+use base qw(Mojo::Base);
 
-sub new{
-    my $class = shift;
-    
-    my $object = {
-        
-    };
-    bless $object, $class;
-    return $object;
+=head1 NAME
+
+JsonRpcService - RPC services for Qooxdoo
+
+=head1 SYNOPSIS
+
+This module gets instanciated by L<ep::MojoApp> and provides backend functionality for your qooxdoo app
+
+=head1 DESCRIPTION
+
+All methods on this class can get called remotely as long as their name does not start with an underscore.
+
+=head2 new()
+
+Create a service object.
+
+=cut 
+
+sub new {
+    my $self = shift->SUPER::new(@_);
+    # do some other interesting initialization work
+    return $self;
 }
 
-sub add{
+
+=head2 echo(var)
+
+return the string we input
+
+=cut  
+
+sub echo {
     my $self = shift;
-    my @params = @_;
-    
-    # Debug message on Mojo-server console (or log)
-    print "Debug: $params[0] + $params[1]\n";
-    
-    # uncomment if you want to die without further handling
-    # die;
-    
-    # uncomment if you want to die with a message in a hash
-    # die {code => 20, message => "Test died on purpose :-)"};
-    
-    
-    # uncomment if you want to die with your homemade error object 
-    # (simple example see below)
-    # better use your elaborate error handling instead!
-    
-    # require Error;
-    # my $error = new Error();
-    # die $error;
-    
-    my $result =  $params[0] + $params[1]
-    return $result;
-    
+    my $arg = shift;
+    return $arg;
 }
 
 1;
- 
- 
-# Example of simple and stupid Error class:
- 
-package Error;
+__END__
+=head1 COPYRIGHT
 
- sub new{
-    my $class = shift;
-    
-    my $error = {};
-    
-    bless $error, $class;
-    return $error;
-}
+Public Domain
 
-sub message{
-    return "stupid error message";
-}
+=head1 AUTHOR
 
-sub code{
-    return "934857"; # no real error code here
-}
+S<Tobias Oetiker E<lt>tobi@oetiker.chE<gt>>
+
+=head1 HISTORY 
+
+ 2011-01-25 to Initial
+
+=cut
+  
+1;
+
+# Emacs Configuration
+#
+# Local Variables:
+# mode: cperl
+# eval: (cperl-set-style "PerlStyle")
+# mode: flyspell
+# mode: flyspell-prog
+# End:
+#
+# vi: sw=4 et
