@@ -1,5 +1,10 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
+0.55	Mon Feb 21 2011
+	
+0.54	Sat Feb 29 2011
+	- CGI::Session, rename main method into dispatch
+
 0.53    Thu Sep 21 2010
    	- POD, fixes
 
