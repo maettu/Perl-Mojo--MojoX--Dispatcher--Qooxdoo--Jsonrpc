@@ -6,7 +6,7 @@ use warnings;
 use Mojo::JSON;
 use base 'Mojolicious::Controller';
 
-our $VERSION = '0.53';
+our $VERSION = '0.55';
 
 sub dispatch {
     my $self = shift;
@@ -239,14 +239,14 @@ a (hopefully) valid json reply.
 =head1 EXAMPLE 
 
 This example exposes a service named "Test" in a folder "RpcService".
-The Mojo application is named "qooxdooserver". The scripts are in
+The Mojo application is named "QooxdooServer". The scripts are in
 the 'example' directory.
 First create this application using 
-"mojolicious generate app qooxdooserver".
+"mojolicious generate app QooxdooServer".
 
 Then, lets write the service:
 
-Change to the root directory "qooxdooserver" of your fresh 
+Change to the root directory "qooxdoo_server" of your fresh 
 Mojo-Application and make a dir named 'qooxdoo-services' 
 for the services you want to expose.
 
@@ -332,7 +332,7 @@ Our "Test"-service could look like:
 
 Please create a constructor (like "new" here) which instantiates
 an object because we are going to use this in
-our 'lib/qooxdooserver.pm' below.
+our 'lib/QooxdooServer.pm' below.
 
 Notice the exception handling: You can die without or with a message 
 (see example above). 
@@ -343,12 +343,12 @@ Happy dying! :-)
 
 Now, lets write our application.
 Almost everything should have been prepared by Mojo when you invoked 
-"mojolicious generate app qooxdooserver" (see above).
+"mojolicious generate app QooxdooServer" (see above).
 
-Change to "lib/" and open "qooxdooserver.pm" in your favourite editor.
+Change to "lib/" and open "QooxdooServer.pm" in your favourite editor.
 Then add some lines to make it look like this:
 
- package qooxdooserver;
+ package QooxdooServer;
 
  use strict;
  use warnings;
@@ -373,7 +373,7 @@ Then add some lines to make it look like this:
     # to our little dispatcher.
     # change this at your own taste.
     $r->route('/qooxdoo')->to('
-        jsonrpc#handle_request', 
+        jsonrpc#dispatch', 
         services    => $services, 
         debug       => 0,
         namespace   => 'MojoX::Dispatcher::Qooxdoo'
@@ -383,8 +383,8 @@ Then add some lines to make it look like this:
 
  1;
 
-Now start your Mojo Server by issuing 'script/qooxdooserver daemon'. 
-If you want to change any options, type 'script/qooxdooserver help'. 
+Now start your Mojo Server by issuing 'script/QooxdooServer daemon'. 
+If you want to change any options, type 'script/QooxdooServer help'. 
 
 =head2 Security
 MojoX::Dispatcher::Qooxdoo::Jsonrpc only allows methods matching
