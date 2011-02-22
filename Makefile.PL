@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME              => 'MojoX::Dispatcher::Qooxdoo::Jsonrpc.pm',
     VERSION_FROM      => 'lib/MojoX/Dispatcher/Qooxdoo/Jsonrpc.pm', # finds $VERSION
-    PREREQ_PM         => {}, # e.g., Module::Name => 1.1
+    PREREQ_PM         => { Mojolicious => 1.11 },
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT	      => 'dispatch Qooxdoo applications with Mojo', 
        AUTHOR         => 'Matthias Bloch <matthias at puffin ch>') : ()),
