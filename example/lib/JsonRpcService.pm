@@ -1,6 +1,6 @@
 package JsonRpcService;
 use strict;
-use base qw(Mojo::Base);
+use Mojo::Base -base;
 
 =head1 NAME
 
@@ -26,6 +26,21 @@ sub new {
     return $self;
 }
 
+=head2 allow_rpc_access
+
+check it this method may be called
+
+=cut
+
+our %allow_access =  (
+    echo => 1
+);
+
+sub allow_rpc_access {
+    my $self = shift;
+    my $method = shift;
+    return $allow_access{$method};
+}
 
 =head2 echo(var)
 

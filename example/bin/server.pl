@@ -1,4 +1,4 @@
-#!/usr/bin/env perl -w
+#!/usr/bin/env perl
 
 # start a local server for testing
 
@@ -24,7 +24,6 @@
 #
 use strict;
 use warnings;
-use v5.12.1;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 use lib "$FindBin::Bin/../../lib";

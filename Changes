@@ -1,5 +1,18 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
+        *** INCOMPATIBLE CHANGES ***
+
+        - the service module has to explicitly tell which
+          of its methods are to be called remotely via the
+          rpc_access_allow.
+
+        - drop the whole _ prefix thing ... and call the
+          check_access, mojo_session and mojo_stash by their actual names
+
+        - enhance pod to cover new things    
+        
+        - follow new mojo class style in examples
+
 0.55	Mon Feb 21 2011
 	
 0.54	Sat Feb 29 2011
