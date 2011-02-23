@@ -68,7 +68,6 @@ sub dispatch {
         # make sure there are not foreign signal handlers
         # messing with our problems
         local $SIG{__DIE__};
-        local $SIG{__WARN__};
         my $svc = $services->{$package};
 
         die {
@@ -79,7 +78,7 @@ sub dispatch {
 
         die {
              origin => 1, 
-             message => "your rpc service object must provide an allow_rpc_access method", 
+             message => "your rpc service object (".ref($svc).") must provide an allow_rpc_access method", 
              code=> 2
         } unless $svc->can('allow_rpc_access');
 
@@ -112,56 +111,43 @@ sub dispatch {
     };
        
     if ($@){ 
+        my $error;
         for (ref $@){
-            /HASH/ && do {
-                $reply = $json->
-                    encode({
-                        error => {
-                            origin => $@->{origin} || 2, 
-                            message => $@->{message}, 
-                            code=>$@->{code}
-                        }, id => $id
-                    });
+            /HASH/ && $@->{message} && do {
+                $error = {
+                     origin => $@->{origin} || 2, 
+                     message => $@->{message}, 
+                     code=>$@->{code}
+                };
                 last;
             };
             /.+/ && $@->can('message') && $@->can('code') && do {
-                $reply = $json->
-                    encode({
-                        error => {
-                            origin => 2, 
-                            message => $@->message(), 
-                            code=>$@->code()
-                        }, id => $id
-                    });
+                $error = {
+                      origin => 2, 
+                      message => $@->message(), 
+                      code=>$@->code()
+                };
                 last;
             };
-            $reply = $json->encode({
-                error => {
-                    origin => 2, 
-                    message => "error while processing ${package}::$method: $@", 
-                    code=> '9999'
-                }, id => $id
-            });
+            $error = {
+                origin => 2, 
+                message => "error while processing ${package}::$method: $@", 
+                code=> '9999'
+            };
         }
+        $reply = $json->encode({ id => $id, error => $error });
+        $self->app->log->fatal("JsonRPC Error $error->{code}: $error->{message}");
     }
-    # no error occurred
-    else{
-        $reply = $json->encode({id => $id, result => $reply});
-    }    
-    _send_reply($reply, $id, $cross_domain, $self);
-}
+    else {
+        $reply = $json->encode({ id => $id, result => $reply });
+    }
 
-sub _send_reply{
-    my ($reply, $id, $cross_domain, $self) = @_;
-    
     if ($cross_domain){
         # for GET requests, qooxdoo expects us to send a javascript method
         # and to wrap our json a litte bit more
         $self->res->headers->content_type('application/javascript');
-        $reply = 
-            "qx.io.remote.transport.Script._requestFinished( $id, " . $reply . ");";
-    }
-    
+        $reply = "qx.io.remote.transport.Script._requestFinished( $id, " . $reply . ");";
+    }    
     $self->render(text => $reply);
 }
 
