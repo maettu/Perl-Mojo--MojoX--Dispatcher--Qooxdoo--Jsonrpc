@@ -1,6 +1,7 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
-        *** INCOMPATIBLE CHANGES ***
+0.66    Thu Feb 22 2011 
+	*** INCOMPATIBLE CHANGES ***
 
         - the service module has to explicitly tell which
           of its methods are to be called remotely via the

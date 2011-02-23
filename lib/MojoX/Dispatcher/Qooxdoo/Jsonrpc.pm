@@ -6,7 +6,7 @@ use warnings;
 use Mojo::JSON;
 use base 'Mojolicious::Controller';
 
-our $VERSION = '0.55';
+our $VERSION = '0.56';
 
 sub dispatch {
     my $self = shift;
@@ -362,7 +362,7 @@ or even do initialization tasks that are required before handling each request.
 
 =head1 AUTHOR
 
-S<Matthias Bloch, E<lt>matthias at puffin chE<gt>>,
+S<Matthias Bloch, E<lt>matthias@puffin.chE<gt>>,
 S<Tobias Oetiker, E<lt>tobi@oetiker.chE<gt>>.
 
 This Module is sponsored by OETIKER+PARTNER AG
