@@ -1,5 +1,8 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
+        - add testing
+        - some catch more errors in jsonrpc
+        - set application/json header on response
         - report rpc errors to the mojo log
         - do not localize __WARN__ in eval as this makes no sense here
         - simplified code a bit more
