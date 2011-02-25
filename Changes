@@ -1,5 +1,6 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
+        - bring Makefile.PL in line with latest trends
         - add testing
         - some catch more errors in jsonrpc
         - set application/json header on response
