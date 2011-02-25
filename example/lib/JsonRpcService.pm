@@ -50,7 +50,7 @@ return the string we input
 
 sub echo {
     my $self = shift;
-    my $arg = shift;
+    my $arg = shift or die "Argument Required!";
     return $arg;
 }
 

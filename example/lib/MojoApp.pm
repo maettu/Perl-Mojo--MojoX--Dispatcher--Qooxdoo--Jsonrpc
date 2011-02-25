@@ -4,7 +4,7 @@ use warnings;
 
 use JsonRpcService;
 
-use base 'Mojolicious';
+use Mojo::Base 'Mojolicious';
 
 sub startup {
     my $self = shift;
@@ -41,7 +41,6 @@ sub startup {
         $r->route('(*qx_root)/framework/source/(*more)')->to(
             cb => sub {
                 my $self = shift;
-                my $qx_root = $self->stash('qx_root');
                 $qx_static->root('/');
                 return $qx_static->dispatch($self);
             }    
