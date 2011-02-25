@@ -1,6 +1,7 @@
 Changes
 Makefile.PL
 MANIFEST
+MANIFEST.SKIP
 README
 lib/MojoX/Dispatcher/Qooxdoo/Jsonrpc.pm
 example/lib/JsonRpcService.pm
