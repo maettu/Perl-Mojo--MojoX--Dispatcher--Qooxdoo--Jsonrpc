@@ -1,5 +1,9 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
+0.68	Sun Feb 22 2011
+	- fix tests
+
+0.67	Sun Feb 22 2011
         - bring Makefile.PL in line with latest trends
         - add testing
         - some catch more errors in jsonrpc
