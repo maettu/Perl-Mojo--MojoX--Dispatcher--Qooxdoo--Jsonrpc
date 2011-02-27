@@ -58,9 +58,15 @@ package Exception;
 use Mojo::Base -base;
 has 'code';
 has 'message';
+use overload ('""' => 'stringify');
+sub stringify {
+    my $self = shift;
+    return "ERROR ".$self->code.": ".$self->message;
+}
 
 1;
 __END__
+
 =head1 COPYRIGHT
 
 Public Domain
