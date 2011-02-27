@@ -29,7 +29,7 @@ $t->post_ok('/jsonrpc','{"id":1,"service":"rpc","method":"test"}','requesting in
   ->json_content_is({error=>{origin=>1,code=>2,message=>"rpc access to method test denied"},id=>1},'json error for invalid method');
 
 $t->post_ok('/jsonrpc','{"id":1,"service":"rpc","method":"echo"}')
-  ->json_content_is({error=>{origin=>2,code=>9999,message=>"error while processing rpc::echo: Argument Required!\n"},id=>1},'propagating generic exception');
+  ->json_content_is({error=>{origin=>2,code=>123,message=>"Argument Required!"},id=>1},'propagating generic exception');
 
 $t->post_ok('/jsonrpc','{"id":1,"service":"rpc","method":"echo","params":["hello"]}','proper jsonrpc call')
   ->json_content_is({id=>1,result=>'hello'},'proper response');

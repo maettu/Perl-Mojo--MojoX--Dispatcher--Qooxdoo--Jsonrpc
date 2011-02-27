@@ -50,9 +50,14 @@ return the string we input
 
 sub echo {
     my $self = shift;
-    my $arg = shift or die "Argument Required!\n";
+    my $arg = shift or die Exception->new(code=>123,message=>"Argument Required!");
     return $arg;
 }
+
+package Exception;
+use Mojo::Base -base;
+has 'code';
+has 'message';
 
 1;
 __END__

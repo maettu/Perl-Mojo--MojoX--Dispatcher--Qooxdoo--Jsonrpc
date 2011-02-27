@@ -267,57 +267,21 @@ Our "Test"-service could look like:
     
     
     # uncomment if you want to die with your homemade error object 
-    # (simple example see below)
-   
-    # use Error;
-    # my $error = new Error('stupid error message', '56457');
-    # die $error;
+    # die Exception->new(code=>123,message=>'stupid error message');
     
     my $result =  $params[0] + $params[1]
     return $result;    
  }
 
+ package Exception;
+ use Mojo::Base -base;
+ has 'code';
+ has 'message';
  1;
- 
- 
- # Example of simple Error object class:
- 
- package Error;
 
- sub new{
-    my $class = shift;
-    
-    my $error = {
-        message => shift;
-        code    => shift;
-    };
-    
-    bless $error, $class;
-    return $error;
- }
-
- sub message{
-    my $self = shift;
-    return $self->{message};
- }
-
- sub code{
-    my $self = shift;
-    return $self->{code};
- }
-
-1;
-
-Please create a constructor (like "new" here) which instantiates
-an object because we are going to use this in
-our 'lib/QooxdooServer.pm' below.
-
-Notice the exception handling: You can die without or with a message 
-(see example above). 
-MojoX::Dispatcher::Qooxdoo::Jsonrpc will catch the "die" like an 
-exception an send a message to the client.
-Happy dying! :-)
-
+The Dispatcher executes all calls to your service module within an eval
+wrapper and will send any execptions you generate within back to the
+qooxdoo application as well as into the Mojolicious logfile.
 
 Now, lets write our application.
 Almost everything should have been prepared by Mojo when you invoked 
@@ -361,12 +325,12 @@ Then add some lines to make it look like this:
 
  1;
 
-Now start your Mojo Server by issuing 'script/QooxdooServer daemon'. 
-If you want to change any options, type 'script/QooxdooServer help'. 
+Now start your Mojo Server by issuing C<script/QooxdooServer daemon>. 
+If you want to change any options, type C<script/QooxdooServer help>. 
 
 =head2 Security
 
-MojoX::Dispatcher::Qooxdoo::Jsonrpc calls the allow_rpc_access
+MojoX::Dispatcher::Qooxdoo::Jsonrpc calls the C<allow_rpc_access>
 method to check if rpc access should be allowed. The result of this
 request is NOT cached, so you can use this method to provide dynamic access control
 or even do initialization tasks that are required before handling each request.
