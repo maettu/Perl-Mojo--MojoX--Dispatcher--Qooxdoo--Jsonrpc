@@ -2,7 +2,7 @@ package MojoApp;
 use strict;
 use warnings;
 
-use JsonRpcService;
+use QxExample::JsonRpcService;
 
 use Mojo::Base 'Mojolicious';
 
@@ -17,7 +17,7 @@ sub startup {
     my $r = $self->routes;
 
     my $services = {
-        rpc => JsonRpcService->new(),
+        rpc => QxExample::JsonRpcService->new(),
     };
             
     $SIG{__WARN__} = sub {

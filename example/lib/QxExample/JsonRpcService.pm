@@ -1,4 +1,4 @@
-package JsonRpcService;
+package QxExample::JsonRpcService;
 use strict;
 use Mojo::Base -base;
 
@@ -50,11 +50,11 @@ return the string we input
 
 sub echo {
     my $self = shift;
-    my $arg = shift or die Exception->new(code=>123,message=>"Argument Required!");
+    my $arg = shift or die QxExample::Exception->new(code=>123,message=>"Argument Required!");
     return $arg;
 }
 
-package Exception;
+package QxExample::Exception;
 use Mojo::Base -base;
 has 'code';
 has 'message';

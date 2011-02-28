@@ -1,5 +1,7 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
+        - fix namespace issues
+
 0.69	Mon Feb 28 2011
         - better documentation
         - improved exception example

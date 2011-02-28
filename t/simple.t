@@ -6,7 +6,7 @@ use lib $FindBin::Bin.'/../lib';
 use lib $FindBin::Bin.'/../example/lib';
 
 use_ok 'MojoX::Dispatcher::Qooxdoo::Jsonrpc';
-use_ok 'MojoApp';
+use_ok 'QxExample::MojoApp';
 
 my $t = Test::Mojo->new(app => MojoApp->new());
 
