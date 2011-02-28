@@ -21,12 +21,12 @@ $t->post_ok('/jsonrpc','{"id":1,"service":"test"}','request without method')
   ->content_like(qr/Missing method property/, 'missing method found');
 
 $t->post_ok('/jsonrpc','{"id":1,"service":"test","method":"test"}','requesting unknown service')
-  ->json_content_is({error=>{origin=>1,code=>3,message=>"service test not available"},id=>1},'json error for invalid service')
+  ->json_content_is({error=>{origin=>1,code=>2,message=>"service test not available"},id=>1},'json error for invalid service')
   ->content_type_is('application/json')
   ->status_is(200);
 
 $t->post_ok('/jsonrpc','{"id":1,"service":"rpc","method":"test"}','requesting invalid method')
-  ->json_content_is({error=>{origin=>1,code=>2,message=>"rpc access to method test denied"},id=>1},'json error for invalid method');
+  ->json_content_is({error=>{origin=>1,code=>6,message=>"rpc access to method test denied"},id=>1},'json error for invalid method');
 
 $t->post_ok('/jsonrpc','{"id":1,"service":"rpc","method":"echo"}')
   ->json_content_is({error=>{origin=>2,code=>123,message=>"Argument Required!"},id=>1},'propagating generic exception');
