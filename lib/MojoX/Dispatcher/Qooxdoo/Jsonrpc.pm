@@ -83,7 +83,7 @@ sub dispatch {
         die {
             origin => 1,
             message => "service $service not available",
-            code=> 3
+            code=> 2
         } if not ref $svc;
 
         die {
@@ -107,13 +107,13 @@ sub dispatch {
         die {
              origin => 1, 
              message => "rpc access to method $method denied", 
-             code=> 2
+             code=> 6
         } unless $svc->allow_rpc_access($method);
 
         die {
              origin => 1, 
              message => "method $method does not exist.", 
-             code=> 2
+             code=> 4
         } if not $svc->can($method);
 
         no strict 'refs';
@@ -143,7 +143,7 @@ sub dispatch {
             $error = {
                 origin => 2, 
                 message => "error while processing ${service}::$method: $@", 
-                code=> '9999'
+                code=> 9999
             };
         }
         $reply = $json->encode({ id => $id, error => $error });
