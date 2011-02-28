@@ -17,7 +17,7 @@ sub startup {
     my $r = $self->routes;
 
     my $services = {
-        rpc => new JsonRpcService(),
+        rpc => JsonRpcService->new(),
     };
             
     $SIG{__WARN__} = sub {
