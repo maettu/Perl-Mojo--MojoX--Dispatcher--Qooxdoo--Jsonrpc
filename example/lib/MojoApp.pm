@@ -6,6 +6,11 @@ use JsonRpcService;
 
 use Mojo::Base 'Mojolicious';
 
+# the dispatcher module gets autoloaded, we list it here to
+# make sure it is available and compiles at startup time and not
+# only on demand.
+use MojoX::Dispatcher::Qooxdoo::Jsonrpc;
+
 sub startup {
     my $self = shift;
 
