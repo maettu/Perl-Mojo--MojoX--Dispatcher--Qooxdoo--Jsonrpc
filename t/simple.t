@@ -22,7 +22,7 @@ $t->post_ok('/jsonrpc','{"id":1,"service":"test"}','request without method')
 
 $t->post_ok('/jsonrpc','{"id":1,"service":"test","method":"test"}','requesting unknown service')
   ->json_content_is({error=>{origin=>1,code=>2,message=>"service test not available"},id=>1},'json error for invalid service')
-  ->content_type_is('application/json')
+  ->content_type_is('application/json; charset=utf-8')
   ->status_is(200);
 
 $t->post_ok('/jsonrpc','{"id":1,"service":"rpc","method":"test"}','requesting invalid method')
@@ -36,7 +36,7 @@ $t->post_ok('/jsonrpc','{"id":1,"service":"rpc","method":"echo","params":["hello
 
 $t->get_ok('/jsonrpc?_ScriptTransport_id=1;_ScriptTransport_data={"id":1,"service":"rpc","method":"echo","params":["hello"]}')
   ->content_is('qx.io.remote.transport.Script._requestFinished( 1, {"id":"1","result":"hello"});','proper response')
-  ->content_type_is('application/javascript')
+  ->content_type_is('application/javascript; charset=utf-8')
   ->status_is(200);
 
 

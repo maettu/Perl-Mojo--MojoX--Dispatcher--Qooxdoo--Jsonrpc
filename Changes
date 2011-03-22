@@ -1,5 +1,10 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
+        Tue Mar 22 2011
+        - add utf8 to content_type
+        - re-decode json prior to rendering so that mojo can do the final encoding
+        - update tests accordingly
+
 0.70	Thu Mar 1 2011
         - fix namespace issues
         - update error codes according to

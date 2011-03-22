@@ -4,7 +4,10 @@ use strict;
 use warnings;
 
 use Mojo::JSON;
-use base 'Mojolicious::Controller';
+use Mojo::Base 'Mojolicious::Controller';
+use Encode;
+
+our $toUTF8 = find_encoding('utf8');
 
 our $VERSION = '0.70';
 
@@ -69,9 +72,7 @@ sub dispatch {
     };
     
     my $params  = $data->{params} || []; # is a reference, so "unpack" it
-
-    $self->res->headers->content_type('application/json');
-    
+ 
     # invocation of method in class according to request 
     my $reply = eval{
         # make sure there are not foreign signal handlers
@@ -156,10 +157,14 @@ sub dispatch {
     if ($cross_domain){
         # for GET requests, qooxdoo expects us to send a javascript method
         # and to wrap our json a litte bit more
-        $self->res->headers->content_type('application/javascript');
+        $self->res->headers->content_type('application/javascript; charset=utf-8');
         $reply = "qx.io.remote.transport.Script._requestFinished( $id, " . $reply . ");";
+    } else {
+        $self->res->headers->content_type('application/json; charset=utf-8');
     }    
-    $self->render(text => $reply);
+    # the render takes care of encoding the output, so make sure we re-decode
+    # the json stuf
+    $self->render(text => $toUTF8->decode($reply));
 }
 
 1;
