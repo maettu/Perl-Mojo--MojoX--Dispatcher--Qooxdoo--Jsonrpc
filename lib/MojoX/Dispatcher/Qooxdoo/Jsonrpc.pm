@@ -16,7 +16,6 @@ sub dispatch {
        
     # instantiate a JSON encoder - decoder object.
     my $json = Mojo::JSON->new;
-
     
     # We have to differentiate between POST and GET requests, because
     # the data is not sent in the same place..
@@ -158,7 +157,7 @@ sub dispatch {
     }
     else {
         $reply = $json->encode({ id => $id, result => $reply });
-        $log->debug("return $reply");
+        $log->debug("return ".$reply);
     }
 
     if ($cross_domain){
