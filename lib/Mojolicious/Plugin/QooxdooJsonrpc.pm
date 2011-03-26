@@ -26,41 +26,31 @@ sub register {
             debug       => 1,        
         );
 
-
-        my $src_static = Mojolicious::Static->new();
-        $src_static->root($qx_app_src);
-        $r->route('/source/index.html')->to(
-            cb => sub {
-                my $self = shift;
-                return $src_static->dispatch($self);
-            }    
-        );
         $r->get( '/source/' => sub { shift->redirect_to('/source/index.html') });
 
-        $r->route('/source/(.a)/(*b)')->to(
-            cb => sub {
+        # relative path
+
+        my $rel_static = Mojolicious::Static->new();
+        $rel_static->root($qx_app_src);
+        my $rel_static_cb = sub {
                 my $self = shift;
-                return $src_static->dispatch($self);
-            }    
-        );
+                return $rel_static->dispatch($self);
+        };
+        $r->route('/source/(*b)')->to( cb => $rel_static_cb );
+        $r->route('/(.a)/framework/source/(*b)')->to( cb => $rel_static_cb );
+        $r->route('/(.a)/downloads/(*b)/source/(*c)')->to( cb => $rel_static_cb );
+
         # absolute source path
-        my $qx_static_abs = Mojolicious::Static->new();
-        $qx_static_abs->root('/');
-        $r->route('/(.a)/(*b)/framework/source/(*c)')->to(
-            cb => sub {
-                my $self = shift;
-                return $qx_static_abs->dispatch($self);
-            } 
-        );
-        # relative source path
-        my $qx_static_rel = Mojolicious::Static->new();
-        $qx_static_rel->root($qx_app_src);
-        $r->route('/(.a)/framework/source/(*more)')->to(
-            cb => sub {
-                my $self = shift;
-                return $qx_static_rel->dispatch($self);
-            } 
-        );
+
+        my $abs_static = Mojolicious::Static->new();
+        $abs_static->root('/');
+        my $abs_static_cb = sub {
+            my $self = shift;
+            return $abs_static->dispatch($self);
+        };
+        $r->route('/(.a)/(*b)/framework/source/(*c)')->to( cb => $abs_static_cb );
+        $r->route('/(.a)/(*b)/downloads/(*b)/source/(*c)')->to( cb => $abs_static_cb );
+
     };
     $r->route($path)->to(
         class       => 'Jsonrpc',
@@ -102,15 +92,10 @@ Mojolicious::Plugin::QooxdooJsonrpc - handle qooxdoo Jsonrpc requests
 
 =head1 DESCRIPTION
 
-This plugin installs the L<MojoX::Dispatcher::Qooxdoo::Jsonrpc> dispatcher
-into your application. If the application is running in development mode the
-plugin will serve both a compiled as well the source version of the
-application. Access the source version via the F</source> url.
-
-See the documentation on L<MojoX::Dispatcher::Qooxdoo::Jsonrpc>
-for details on how to write your service. 
-
-The plugin understands the following parameters.
+This plugin installs the L<MojoX::Dispatcher::Qooxdoo::Jsonrpc> dispatcher into your application.
+It has the ability to serve both a compiled as well the source version of the application.
+See the documentation on L<MojoX::Dispatcher::Qooxdoo::Jsonrpc> for details on how to write
+your service. The plugin understands the following parameters
 
 =over
 
