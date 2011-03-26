@@ -1,4 +1,4 @@
-use Test::More tests => 23;
+use Test::More tests => 24;
 use Test::Mojo;
 
 use FindBin;
@@ -6,6 +6,7 @@ use lib $FindBin::Bin.'/../lib';
 use lib $FindBin::Bin.'/../example/lib';
 
 use_ok 'MojoX::Dispatcher::Qooxdoo::Jsonrpc';
+use_ok 'Mojolicious::Plugin::QooxdooJsonrpc';
 use_ok 'QxExample::MojoApp';
 
 my $t = Test::Mojo->new(app => MojoApp->new());

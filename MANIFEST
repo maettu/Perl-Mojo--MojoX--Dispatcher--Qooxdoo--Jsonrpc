@@ -4,6 +4,7 @@ MANIFEST
 MANIFEST.SKIP
 README
 lib/MojoX/Dispatcher/Qooxdoo/Jsonrpc.pm
+lib/Mojolicious/Plugin/QooxdooJsonRpc.pm
 example/lib/JsonRpcService.pm
 example/lib/MojoApp.pm
 example/bin/server.pl

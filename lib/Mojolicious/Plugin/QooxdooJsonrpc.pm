@@ -13,11 +13,11 @@ sub register {
     $conf ||= {};
     my $services = $conf->{services};
     my $path = $conf->{path} || '/jsonrpc';
-    my $qx_app_root = $conf->{qx_app_root} || $app->home->rel_dir('../frontend');
+    my $qx_app_src = $conf->{qx_app_src} || $app->home->rel_dir('../frontend');
     my $r = $app->routes;
 
     if ($app->mode eq 'development'){
-        $r->route('/source/'.$path)->to(
+        $r->route('/source'.$path)->to(
             class       => 'Jsonrpc',
             method      => 'dispatch',
             namespace   => 'MojoX::Dispatcher::Qooxdoo',        
@@ -25,20 +25,40 @@ sub register {
             services    => $services,        
             debug       => 1,        
         );
-        my $qx_static = Mojolicious::Static->new();
 
-        $r->route('/source/')->to(
+
+        my $src_static = Mojolicious::Static->new();
+        $src_static->root($qx_app_src);
+        $r->route('/source/index.html')->to(
             cb => sub {
                 my $self = shift;
-                $qx_static->root($qx_app_root);
-                return $qx_static->dispatch($self);
+                return $src_static->dispatch($self);
             }    
         );
-        $r->route('(*qx_root)/framework/source/(*more)')->to(
+        $r->get( '/source/' => sub { shift->redirect_to('/source/index.html') });
+
+        $r->route('/source/(.a)/(*b)')->to(
             cb => sub {
                 my $self = shift;
-                $qx_static->root('/');
-                return $qx_static->dispatch($self);
+                return $src_static->dispatch($self);
+            }    
+        );
+        # absolute source path
+        my $qx_static_abs = Mojolicious::Static->new();
+        $qx_static_abs->root('/');
+        $r->route('/(.a)/(*b)/framework/source/(*c)')->to(
+            cb => sub {
+                my $self = shift;
+                return $qx_static_abs->dispatch($self);
+            } 
+        );
+        # relative source path
+        my $qx_static_rel = Mojolicious::Static->new();
+        $qx_static_rel->root($qx_app_src);
+        $r->route('/(.a)/framework/source/(*more)')->to(
+            cb => sub {
+                my $self = shift;
+                return $qx_static_rel->dispatch($self);
             } 
         );
     };
@@ -47,10 +67,11 @@ sub register {
         method      => 'dispatch',
         namespace   => 'MojoX::Dispatcher::Qooxdoo',        
         # our own properties
-        services    => $services,        
-        debug       => 0,        
+        services    => $services
     );
-    $r->get( '/' => sub { shift->render_static('index.html') });
+
+    $r->get( '/' => sub { shift->redirect_to('/index.html') });
+
 }
 
 1;

@@ -16,6 +16,11 @@ sub dispatch {
        
     my $debug = $self->stash('debug');
 
+    local $SIG{__WARN__} = sub {
+        local $SIG{__WARN__};
+        $self->log->info(shift);
+    };
+
     # instantiate a JSON encoder - decoder object.
     my $json = Mojo::JSON->new;
     
