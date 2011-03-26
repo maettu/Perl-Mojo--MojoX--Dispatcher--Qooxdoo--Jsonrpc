@@ -102,10 +102,15 @@ Mojolicious::Plugin::QooxdooJsonrpc - handle qooxdoo Jsonrpc requests
 
 =head1 DESCRIPTION
 
-This plugin installs the L<MojoX::Dispatcher::Qooxdoo::Jsonrpc> dispatcher into your application.
-It has the ability to serve both a compiled as well the source version of the application.
-See the documentation on L<MojoX::Dispatcher::Qooxdoo::Jsonrpc> for details on how to write
-your service. The plugin understands the following parameters
+This plugin installs the L<MojoX::Dispatcher::Qooxdoo::Jsonrpc> dispatcher
+into your application. If the application is running in development mode the
+plugin will serve both a compiled as well the source version of the
+application. Access the source version via the F</source> url.
+
+See the documentation on L<MojoX::Dispatcher::Qooxdoo::Jsonrpc>
+for details on how to write your service. 
+
+The plugin understands the following parameters.
 
 =over
 
