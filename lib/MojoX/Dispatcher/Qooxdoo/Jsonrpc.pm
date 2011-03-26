@@ -14,19 +14,19 @@ our $VERSION = '0.70';
 sub dispatch {
     my $self = shift;
        
-    my $debug = $self->stash('debug');
-
-    local $SIG{__WARN__} = sub {
-        local $SIG{__WARN__};
-        $self->log->info(shift);
-    };
-
     # instantiate a JSON encoder - decoder object.
     my $json = Mojo::JSON->new;
+
     
     # We have to differentiate between POST and GET requests, because
     # the data is not sent in the same place..
-    
+    my $log = $self->app->log;
+
+    # send warnings to log file ... 
+    local $SIG{__WARN__} = sub {
+        $log->info(shift);
+    };
+
     my $id;    
     my $data;
     my $cross_domain;
@@ -47,14 +47,14 @@ sub dispatch {
             next;
         };
         my $error = "request must be POST or GET. Can't handle '".$self->req->method."'";
-        $self->app->log->error($error);
+        $log->error($error);
         $self->render(text => $error, status=>500);
         return;
     }        
 
     if (not defined $id){
         my $error = "This is not a JsonRPC request.";
-        $self->app->log->error($error);
+        $log->error($error);
         $self->render(text => $error, status=>500);
         return;
     }
@@ -63,7 +63,7 @@ sub dispatch {
     # Check if desired service is available
     my $service = $data->{service} or do {
         my $error = "Missing service property in JsonRPC request.";
-        $self->app->log->error($error);
+        $log->error($error);
         $self->render(text => $error, status=>500);
         return;
     };
@@ -71,7 +71,7 @@ sub dispatch {
     # Check if method is not private (marked with a leading underscore)
     my $method = $data->{method} or do {
         my $error = "Missing method property in JsonRPC request.";
-        $self->app->log->error($error);
+        $log->error($error);
         $self->render(text => $error, status=>500);
         return;
     };
@@ -122,8 +122,9 @@ sub dispatch {
              code=> 4
         } if not $svc->can($method);
 
-        no strict 'refs';
+        $log->debug("call $method(".$json->encode($params).")");
         # reply
+        no strict 'refs';
         $svc->$method(@$params);
     };
        
@@ -153,10 +154,11 @@ sub dispatch {
             };
         }
         $reply = $json->encode({ id => $id, error => $error });
-        $self->app->log->error("JsonRPC Error $error->{code}: $error->{message}");
+        $log->error("JsonRPC Error $error->{code}: $error->{message}");
     }
     else {
         $reply = $json->encode({ id => $id, result => $reply });
+        $log->debug("return $reply");
     }
 
     if ($cross_domain){

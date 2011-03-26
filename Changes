@@ -1,6 +1,7 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
         
         Sat Mar 26 2011
+        - send requests and results to log at debug level
         - new module Mojolicious::Plugin::QooxdooJsonrpc makes writing
           applications even simpler. Included support for serving
           both the production and the source version of the application
