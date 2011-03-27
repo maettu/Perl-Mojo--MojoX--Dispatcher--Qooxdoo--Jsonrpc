@@ -9,7 +9,7 @@ use Encode;
 
 our $toUTF8 = find_encoding('utf8');
 
-our $VERSION = '0.70';
+our $VERSION = '0.72';
 
 sub dispatch {
     my $self = shift;
