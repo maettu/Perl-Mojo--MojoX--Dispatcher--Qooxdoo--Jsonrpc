@@ -278,13 +278,13 @@ Our "Test"-service could look like:
     
     
     # uncomment if you want to die with your homemade error object 
-    # die Exception->new(code=>123,message=>'stupid error message');
+    # die MyException->new(code=>123,message=>'stupid error message');
     
     my $result =  $params[0] + $params[1]
     return $result;    
  }
 
- package Exception;
+ package MyException;
  use Mojo::Base -base;
  has 'code';
  has 'message';
@@ -294,12 +294,9 @@ The Dispatcher executes all calls to your service module within an eval
 wrapper and will send any execptions you generate within back to the
 qooxdoo application as well as into the Mojolicious logfile.
 
-Now, lets write our application.
-Almost everything should have been prepared by Mojo when you invoked 
-"mojolicious generate app QooxdooServer" (see above).
-
-Change to "lib/" and open "QooxdooServer.pm" in your favourite editor.
-Then add some lines to make it look like this:
+Now, lets write our application. Normally one would use the services
+of L<Mojolicious::Plugin::QooxdooJsonrpc> for this. If you want to use the dipatcher directly,
+this is how it is done.
 
  package QooxdooServer;
 
@@ -315,7 +312,7 @@ Then add some lines to make it look like this:
     my $self = shift;
     
     my $services= {
-        Test => new RpcService::Test(),
+        Test => RpcService::Test->new(),
         # more services here
     };
     
