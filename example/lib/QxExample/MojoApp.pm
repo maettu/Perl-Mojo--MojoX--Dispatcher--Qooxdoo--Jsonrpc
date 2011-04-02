@@ -1,4 +1,4 @@
-package MojoApp;
+package QxExample::MojoApp;
 use strict;
 use warnings;
 
