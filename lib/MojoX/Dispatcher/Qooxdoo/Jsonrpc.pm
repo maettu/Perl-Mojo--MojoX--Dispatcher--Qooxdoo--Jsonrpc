@@ -24,7 +24,9 @@ sub dispatch {
 
     # send warnings to log file preserving the origin
     local $SIG{__WARN__} = sub {
-        @_ = ($log, shift);
+        my  $message = shift;
+        $message =~ s/\n$//;
+        @_ = ($log, $message);
         goto &Mojo::Log::warn;
     };
     my $id;    
