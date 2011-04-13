@@ -1,5 +1,8 @@
 package Mojolicious::Plugin::QooxdooJsonrpc;
+
 use Mojo::Base 'Mojolicious::Plugin';
+use File::Spec::Functions;
+use Cwd qw(abs_path);
 
 # the dispatcher module gets autoloaded, we list it here to
 # make sure it is available and compiles at startup time and not
@@ -16,6 +19,8 @@ sub register {
     my $qx_app_src = $conf->{qx_app_src} || $app->home->rel_dir('../frontend');
     my $r = $app->routes;
 
+    use Data::Dumper;
+
     if ($app->mode eq 'development'){
         $r->route('/source'.$path)->to(
             class       => 'Jsonrpc',
@@ -29,7 +34,6 @@ sub register {
         $r->get( '/source/' => sub { shift->redirect_to('/source/index.html') });
 
         # relative path
-
         my $rel_static = Mojolicious::Static->new();
         $rel_static->root($qx_app_src);
         my $rel_static_cb = sub {
@@ -37,19 +41,28 @@ sub register {
                 return $rel_static->dispatch($self);
         };
         $r->route('/source/(*b)')->to( cb => $rel_static_cb );
-        $r->route('/(.a)/framework/source/(*b)')->to( cb => $rel_static_cb );
-        $r->route('/(.a)/downloads/(*b)/source/(*c)')->to( cb => $rel_static_cb );
-
-        # absolute source path
 
         my $abs_static = Mojolicious::Static->new();
-        $abs_static->root('/');
+        my %prefixCache;
         my $abs_static_cb = sub {
             my $self = shift;
+            my $prefix = catdir(split /\//, $self->stash->{prefix});
+            if (not defined $prefixCache{$prefix}){
+                my $path = $qx_app_src;
+                my $last_path = '';
+                while ($path ne $last_path and not -d catdir($path,$prefix)){
+                    $last_path = $path;
+                    $path = abs_path(catdir($last_path,updir));
+                }
+                $self->app->log->info("Auto register static path mapping from '$prefix' to '".catdir($path,$prefix)."'");
+                $prefixCache{$prefix} = $path;
+            } 
+            $abs_static->root($prefixCache{$prefix});
             return $abs_static->dispatch($self);
         };
-        $r->route('/(.a)/(*b)/framework/source/(*c)')->to( cb => $abs_static_cb );
-        $r->route('/(.a)/(*b)/downloads/(*b)/source/(*c)')->to( cb => $abs_static_cb );
+
+        $r->route('/(*prefix)/framework/source/(*b)')->to( cb => $abs_static_cb );
+        $r->route('/(*prefix)/downloads/(*b)/source/(*c)')->to( cb => $abs_static_cb );
 
     };
     $r->route($path)->to(
