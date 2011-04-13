@@ -19,8 +19,6 @@ sub register {
     my $qx_app_src = $conf->{qx_app_src} || $app->home->rel_dir('../frontend');
     my $r = $app->routes;
 
-    use Data::Dumper;
-
     if ($app->mode eq 'development'){
         $r->route('/source'.$path)->to(
             class       => 'Jsonrpc',
@@ -46,15 +44,16 @@ sub register {
         my %prefixCache;
         my $abs_static_cb = sub {
             my $self = shift;
-            my $prefix = catdir(split /\//, $self->stash->{prefix});
+            my $prefix = $self->stash->{prefix};
             if (not defined $prefixCache{$prefix}){
+                my $prefix_local = catdir(split /\//, $prefix);
                 my $path = $qx_app_src;
                 my $last_path = '';
-                while ($path ne $last_path and not -d catdir($path,$prefix)){
+                while ($path ne $last_path and not -d catdir($path,$prefix_local)){
                     $last_path = $path;
                     $path = abs_path(catdir($last_path,updir));
                 }
-                $self->app->log->info("Auto register static path mapping from '$prefix' to '".catdir($path,$prefix)."'");
+                $self->app->log->info("Auto register static path mapping from '$prefix' to '".catdir($path,$prefix_local)."'");
                 $prefixCache{$prefix} = $path;
             } 
             $abs_static->root($prefixCache{$prefix});
