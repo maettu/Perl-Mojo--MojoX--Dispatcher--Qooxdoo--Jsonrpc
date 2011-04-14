@@ -1,6 +1,6 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
-        - make plugin in development mode creative in finding
+0.75    - make plugin in development mode creative in finding
           the qooxdoo source code and contrib downloads
 
 0.74    Mon Arp 04 2011
