@@ -38,7 +38,7 @@ sub register {
                 my $self = shift;
                 return $rel_static->dispatch($self);
         };
-        $r->route('/source/(*b)')->to( cb => $rel_static_cb );
+        $r->get('/source/(*b)' => $rel_static_cb );
 
         my $abs_static = Mojolicious::Static->new();
         my %prefixCache;
@@ -60,8 +60,8 @@ sub register {
             return $abs_static->dispatch($self);
         };
 
-        $r->route('/(*prefix)/framework/source/(*b)')->to( cb => $abs_static_cb );
-        $r->route('/(*prefix)/downloads/(*b)/source/(*c)')->to( cb => $abs_static_cb );
+        $r->get('/(*prefix)/framework/source/(*b)' => $abs_static_cb );
+        $r->get('/(*prefix)/downloads/(*b)/source/(*c)' => $abs_static_cb );
 
     };
     $r->route($path)->to(

@@ -1,5 +1,8 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
+        - simplify plugin code a little by using get method when
+          setting up routes
+
 0.75    - make plugin in development mode creative in finding
           the qooxdoo source code and contrib downloads
 
