@@ -28,9 +28,12 @@ sub register {
     );
 
     if ($ENV{QX_SRC_MODE}){
-        $app->log->info("Enabeling source mode");
-        my $qx_app_src = $app->home->rel_dir($ENV{QX_SRC_PATH} || catdir(updir,'frontend','source'));
-        $app->log->info("Serving source files from $qx_app_src");
+        my $qx_app_src = abs_path(
+            $ENV{QX_SRC_PATH} && file_name_is_absolute($ENV{QX_SRC_PATH})
+            ? $ENV{QX_SRC_PATH} 
+            : $app->home->rel_dir($ENV{QX_SRC_PATH} || catdir(updir,'frontend','source'))
+        );
+        $app->log->info("Runnning in QX_SRC_MODE with files from $qx_app_src");
         # relative path
         my $rel_static = Mojolicious::Static->new();
         $rel_static->root($qx_app_src);
