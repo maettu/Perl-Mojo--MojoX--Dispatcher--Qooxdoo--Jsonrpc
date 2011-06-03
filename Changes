@@ -1,5 +1,19 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
+	*** INCOMPATIBLE CHANGES ***
+        The QooxdooJsonrpc plugin does not install a /source
+        path automatically anymore ... there were too many problem
+        with other parts of the application which would need special
+        attention to work with relative requests coming from a different
+        'path' ... starting with this version, there are now two
+        environment variables that govern source mode:
+
+        QX_SRC_MODE=1 will enable serving your application from
+        ../frontend/source ... 
+
+        QX_SRC_PATH=/where/ever/source allows to specify some other 
+        directory to serve your application from.
+
 0.76    - require mojo 0.34 to make sure we don't run into
           trouble with old versions.
 
