@@ -1,6 +1,6 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
-	*** INCOMPATIBLE CHANGES ***
+0.80	*** INCOMPATIBLE CHANGES ***
         The QooxdooJsonrpc plugin does not install a /source
         path automatically anymore ... there were too many problem
         with other parts of the application which would need special
