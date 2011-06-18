@@ -101,13 +101,20 @@ sub dispatch {
         } unless $svc->can('allow_rpc_access');
 
         
+        if ($svc->can('controller')){
+            # initialize session if it does not exists yet
+            $svc->controller($self);
+        }
+
         if ($svc->can('mojo_session')){
             # initialize session if it does not exists yet
+            $log->warnings('mojo_session is deprecated. Use controller->session instead');
             my $session = $self->stash->{'mojo.session'} ||= {};
             $svc->mojo_session($session);
         }
 
         if ($svc->can('mojo_stash')){
+            $log->warnings('mojo_stash is deprecated. Use controller->stash instead');
             # initialize session if it does not exists yet
             $svc->mojo_stash($self->stash);
         }
@@ -242,14 +249,11 @@ Our "Test"-service could look like:
 
  use Mojo::Base -base;
 
- # if this attribute is created it will hold the mojo cookie session hash
- # it is a hash pointer use it to store little bits of session information
- # the session is signed and written into a browser cookie.
- has 'mojo_session';
-
- # if this attribute exists it will provide access to the mojo stash
- # the mojo stash holds all sorts of information on the actual request
- has 'mojo_stash';
+ # if you want to access mojo specific information
+ # provide a controller property, it will be set to the
+ # current controller as the request is dispached.
+ # see L<Mojolicious::Controller> for documentation.
+ has 'controller';
  
  # MANDADROY access check method. The method is called right before the actual
  # method call, after assigning mojo_session and mojo_stash properties are set.
@@ -261,7 +265,7 @@ Our "Test"-service could look like:
 
  sub allow_rpc_access {
     my $self = shift;
-    my $method = shift;          
+    my $method = shift;              
     # check if we can access
     return $access{$method};
  }
@@ -297,9 +301,9 @@ The Dispatcher executes all calls to your service module within an eval
 wrapper and will send any execptions you generate within back to the
 qooxdoo application as well as into the Mojolicious logfile.
 
-Now, lets write our application. Normally one would use the services
-of L<Mojolicious::Plugin::QooxdooJsonrpc> for this. If you want to use the dipatcher directly,
-this is how it is done.
+Now, lets write our application. Normally one would use the services of
+L<Mojolicious::Plugin::QooxdooJsonrpc> for this. If you want to use the
+dipatcher directly, this is how it is done.
 
  package QooxdooServer;
 
@@ -328,7 +332,6 @@ this is how it is done.
     $r->route('/qooxdoo')->to('
         jsonrpc#dispatch', 
         services    => $services, 
-        debug       => 0,
         namespace   => 'MojoX::Dispatcher::Qooxdoo'
     );
     
