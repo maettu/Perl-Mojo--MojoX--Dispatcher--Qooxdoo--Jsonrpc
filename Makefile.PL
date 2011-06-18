@@ -18,7 +18,7 @@ my %WriteMakefileArgs = (
   'PREREQ_PM' => {
     'Mojolicious' => '1.34'
   },
-  'VERSION' => '0.76',
+  'VERSION' => '0.80',
   'test' => {
     'TESTS' => 't/*.t'
   }
