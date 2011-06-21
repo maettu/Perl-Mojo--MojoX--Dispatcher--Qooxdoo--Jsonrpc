@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use File::Spec::Functions;
 use Cwd qw(abs_path);
 
+our $VERSION = '0.82';
 # the dispatcher module gets autoloaded, we list it here to
 # make sure it is available and compiles at startup time and not
 # only on demand.
@@ -39,22 +40,21 @@ sub register {
         $rel_static->root($qx_app_src);
         my $rel_static_cb = sub {
              my $self = shift;
-             my $file = $self->stash->{file} || 'index.html';
+             my $file = $self->param('file');
              $self->req->url->path('/'.$file); # relative paths get appended ... 
              return $rel_static->dispatch($self);
         };
         
         my @root = split /\//, $root;
         pop @root;
-        $r->get(join('/',@root).'/source/(*file)' => $rel_static_cb );
-        $r->get($root.'(*file)' => $rel_static_cb );
-        $r->get($root => $rel_static_cb );
+        $r->get(join('/',@root).'/source/(*file)' => {file => 'index.html' } => $rel_static_cb );
+        $r->get($root.'(*file)' => {file => 'index.html' } => $rel_static_cb );
 
         my %prefixCache;
         my $abs_static = Mojolicious::Static->new();
         my $abs_static_cb = sub {
             my $self = shift;
-            my $prefix = $self->stash->{prefix};
+            my $prefix = $self->param('prefix');
             if (not defined $prefixCache{$prefix}){
                 my $prefix_local = catdir(split /\//, $prefix);
                 my $path = $qx_app_src;
@@ -74,13 +74,12 @@ sub register {
         $r->get('/(*prefix)/downloads/(*b)/source/(*c)' => $abs_static_cb );
     }
     else {
-        $r->get($root.'(*file)' => sub {
+        $r->get($root.'(*file)' => {file => 'index.html' } => sub {
              my $self = shift;
-             my $file = $self->stash->{file};        
+             my $file = $self->param('file');
              $self->req->url->path('/'.$file);
              return $app->static->dispatch($self);
         });
-        $r->get($root => sub { shift->render_static('index.html') });
      }
 }
 
