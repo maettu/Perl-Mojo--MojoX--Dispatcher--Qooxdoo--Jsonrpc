@@ -1,7 +1,7 @@
 package Mojolicious::Plugin::QooxdooJsonrpc;
 
 use Mojo::Base 'Mojolicious::Plugin';
-use File::Spec::Functions qw(splitdir updir catdir);
+use File::Spec::Functions qw(splitdir updir catdir file_name_is_absolute);
 use Cwd qw(abs_path);
 
 our $VERSION = '0.82';
@@ -57,7 +57,7 @@ sub register {
             } 
             $static->root($prefixCache{$prefix});
             warn "####".$static->root.' - '.$self->req->url->path."\n";            
-            if ($static->dispatch($self)){
+            unless ($static->dispatch($self)){
                 $self->render_text($self->req->url->path.' not found', status => 404);
             }
         };
