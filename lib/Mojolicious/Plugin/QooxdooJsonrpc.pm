@@ -1,7 +1,7 @@
 package Mojolicious::Plugin::QooxdooJsonrpc;
 
 use Mojo::Base 'Mojolicious::Plugin';
-use File::Spec::Functions;
+use File::Spec::Functions qw(splitdir updir catdir);
 use Cwd qw(abs_path);
 
 our $VERSION = '0.82';
@@ -35,26 +35,15 @@ sub register {
             : $app->home->rel_dir($ENV{QX_SRC_PATH} || catdir(updir,'frontend','source'))
         );
         $app->log->info("Runnning in QX_SRC_MODE with files from $qx_app_src");
-        # relative path
-        my $rel_static = Mojolicious::Static->new();
-        $rel_static->root($qx_app_src);
-        my $rel_static_cb = sub {
-             my $self = shift;
-             my $file = $self->param('file');
-             $self->req->url->path('/'.$file); # relative paths get appended ... 
-             return $rel_static->dispatch($self);
-        };
-        
-        my @root = split /\//, $root;
-        pop @root;
-        $r->get(join('/',@root).'/source/(*file)' => {file => 'index.html' } => $rel_static_cb );
-        $r->get($root.'(*file)' => {file => 'index.html' } => $rel_static_cb );
 
         my %prefixCache;
-        my $abs_static = Mojolicious::Static->new();
-        my $abs_static_cb = sub {
+        my $static = Mojolicious::Static->new();
+        my $static_cb = sub {
             my $self = shift;
-            my $prefix = $self->param('prefix');
+            my $prefix = $self->param('prefix');    
+            if ($self->param('file')){
+                $self->req->url->path('/'.$prefix.'/'.$self->param('file'));
+            }
             if (not defined $prefixCache{$prefix}){
                 my $prefix_local = catdir(split /\//, $prefix);
                 my $path = $qx_app_src;
@@ -63,15 +52,26 @@ sub register {
                     $last_path = $path;
                     $path = abs_path(catdir($last_path,updir));
                 }
-                $app->log->info("Auto register static path mapping from '$prefix' to '".catdir($path,$prefix_local)."'");
+                $app->log->info("Auto register static path mapping from '$prefix' to '$path'");
                 $prefixCache{$prefix} = $path;
             } 
-            $abs_static->root($prefixCache{$prefix});
-            return $abs_static->dispatch($self);
+            $static->root($prefixCache{$prefix});
+            warn "####".$static->root.' - '.$self->req->url->path."\n";            
+            if ($static->dispatch($self)){
+                $self->render_text($self->req->url->path.' not found', status => 404);
+            }
         };
 
-        $r->get('/(*prefix)/framework/source/(*b)' => $abs_static_cb );
-        $r->get('/(*prefix)/downloads/(*b)/source/(*c)' => $abs_static_cb );
+        $r->get('/(*prefix)/framework/source/(*a)' => $static_cb );
+        $r->get('/(*prefix)/source/class/(*a)' => $static_cb );
+        $r->get('/(*prefix)/source/resource/(*a)' => $static_cb );
+        $r->get('/(*prefix)/source/script/(*a)' => $static_cb );
+        $r->get('/(*prefix)/downloads/(*a)/source/(*b)' => $static_cb );
+        $r->get('/source/index.html' => {prefix=>'source'} => $static_cb );
+        $r->get('/source/class/(*b)' => {prefix=>'source'} => $static_cb );
+        $r->get('/source/resource/(*b)' => {prefix=>'source'} => $static_cb );
+        $r->get('/source/script/(*b)' => {prefix=>'source'} => $static_cb );
+        $r->get($root.'(*file)' => {prefix => 'source', file => 'index.html' } => $static_cb);
     }
     else {
         $r->get($root.'(*file)' => {file => 'index.html' } => sub {
