@@ -56,7 +56,6 @@ sub register {
                 $prefixCache{$prefix} = $path;
             } 
             $static->root($prefixCache{$prefix});
-            warn "####".$static->root.' - '.$self->req->url->path."\n";            
             unless ($static->dispatch($self)){
                 $self->render_text($self->req->url->path.' not found', status => 404);
             }

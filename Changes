@@ -1,5 +1,7 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
+        removed excess loggin left in from development
+
 0.82    make the code more mojoy
         rewritten QX_SRC_MODE to be more versatile in serving 'the source'
 
