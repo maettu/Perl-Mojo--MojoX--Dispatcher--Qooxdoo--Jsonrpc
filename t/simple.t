@@ -9,7 +9,7 @@ use_ok 'MojoX::Dispatcher::Qooxdoo::Jsonrpc';
 use_ok 'Mojolicious::Plugin::QooxdooJsonrpc';
 use_ok 'QxExample::MojoApp';
 
-my $t = Test::Mojo->new(app => QxExample::MojoApp->new());
+my $t = Test::Mojo->new('QxExample::MojoApp');
 
 $t->post_ok('/jsonrpc','x','non-jsonrpc request sent')
   ->content_like(qr/This is not a JsonRPC request/,'bad request identified')

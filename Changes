@@ -1,6 +1,11 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
-        If the service has a 'controller' property, it will get the current
+        removed excess loggin left in from development
+
+0.82    make the code more mojoy
+        rewritten QX_SRC_MODE to be more versatile in serving 'the source'
+
+0.81    If the service has a 'controller' property, it will get the current
         controller context assigned. This supersedes the 'mojo_*'
         properties, they are now deprecated.
 
