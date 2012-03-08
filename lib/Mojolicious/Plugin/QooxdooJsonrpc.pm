@@ -55,7 +55,13 @@ sub register {
                 $app->log->info("Auto register static path mapping from '$prefix' to '$path'");
                 $prefixCache{$prefix} = $path;
             } 
-            $static->root($prefixCache{$prefix});
+            # support the new paths construct
+            if ($static->can('paths')){
+                $static->paths([$prefixCache{$prefix}]);
+            }
+            else {
+                $static->root($prefixCache{$prefix});
+            }
             unless ($static->dispatch($self)){
                 $self->render_text($self->req->url->path.' not found', status => 404);
             }
