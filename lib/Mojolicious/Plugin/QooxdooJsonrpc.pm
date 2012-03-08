@@ -4,7 +4,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use File::Spec::Functions qw(splitdir updir catdir file_name_is_absolute);
 use Cwd qw(abs_path);
 
-our $VERSION = '0.82';
+our $VERSION = '0.84';
 # the dispatcher module gets autoloaded, we list it here to
 # make sure it is available and compiles at startup time and not
 # only on demand.
