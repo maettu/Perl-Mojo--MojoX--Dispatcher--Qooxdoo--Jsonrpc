@@ -1,5 +1,6 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
+        make compatible with Mojolicious::Static API changes
         removed excess loggin left in from development
 
 0.82    make the code more mojoy
