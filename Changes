@@ -1,6 +1,9 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
 
+0.85    up required Mojolicious version to 2.49 and adapt route invocation
+        accordingly
+
 0.84    make compatible with Mojolicious::Static API changes
 
 0.83    removed excess loggin left in from development
