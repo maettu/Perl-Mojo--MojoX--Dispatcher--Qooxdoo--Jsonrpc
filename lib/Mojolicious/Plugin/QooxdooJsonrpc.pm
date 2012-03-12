@@ -4,7 +4,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use File::Spec::Functions qw(splitdir updir catdir file_name_is_absolute);
 use Cwd qw(abs_path);
 
-our $VERSION = '0.84';
+our $VERSION = '0.85';
 # the dispatcher module gets autoloaded, we list it here to
 # make sure it is available and compiles at startup time and not
 # only on demand.
@@ -21,8 +21,8 @@ sub register {
     my $r = $app->routes;
 
     $r->route($root.$path)->to(
-        class       => 'Jsonrpc',
-        method      => 'dispatch',
+        controller  => 'Jsonrpc',
+        action      => 'dispatch',
         namespace   => 'MojoX::Dispatcher::Qooxdoo',        
         # our own properties
         services    => $services
@@ -55,13 +55,8 @@ sub register {
                 $app->log->info("Auto register static path mapping from '$prefix' to '$path'");
                 $prefixCache{$prefix} = $path;
             } 
-            # support the new paths construct
-            if ($static->can('paths')){
-                $static->paths([$prefixCache{$prefix}]);
-            }
-            else {
-                $static->root($prefixCache{$prefix});
-            }
+            $static->paths([$prefixCache{$prefix}]);
+
             unless ($static->dispatch($self)){
                 $self->render_text($self->req->url->path.' not found', status => 404);
             }
