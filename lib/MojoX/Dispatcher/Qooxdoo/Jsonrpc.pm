@@ -108,13 +108,13 @@ sub dispatch {
 
         if ($svc->can('mojo_session')){
             # initialize session if it does not exists yet
-            $log->warnings('mojo_session is deprecated. Use controller->session instead');
+            $log->warn('mojo_session is deprecated. Use controller->session instead');
             my $session = $self->stash->{'mojo.session'} ||= {};
             $svc->mojo_session($session);
         }
 
         if ($svc->can('mojo_stash')){
-            $log->warnings('mojo_stash is deprecated. Use controller->stash instead');
+            $log->warn('mojo_stash is deprecated. Use controller->stash instead');
             # initialize session if it does not exists yet
             $svc->mojo_stash($self->stash);
         }
