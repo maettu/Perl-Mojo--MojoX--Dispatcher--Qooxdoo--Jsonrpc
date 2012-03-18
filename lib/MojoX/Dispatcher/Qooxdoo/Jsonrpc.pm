@@ -9,7 +9,7 @@ use Encode;
 
 our $toUTF8 = find_encoding('utf8');
 
-our $VERSION = '0.85';
+our $VERSION = '0.86';
 
 has 'JSON' => sub { Mojo::JSON->new };
 

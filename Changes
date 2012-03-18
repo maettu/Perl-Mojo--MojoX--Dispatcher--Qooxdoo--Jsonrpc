@@ -1,5 +1,6 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
 
+0.86    use warn instead of warnings -> fix for rt#75866
 
 0.85    up required Mojolicious version to 2.49 and adapt route invocation
         accordingly
