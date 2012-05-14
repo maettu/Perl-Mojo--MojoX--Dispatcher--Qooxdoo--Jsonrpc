@@ -1,4 +1,6 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
+  
+0.87    make sure we do not ship from 'public' in QX_SRC_MODE
 
 0.86    use warn instead of warnings -> fix for rt#75866
 
