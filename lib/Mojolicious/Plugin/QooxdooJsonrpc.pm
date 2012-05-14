@@ -4,7 +4,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use File::Spec::Functions qw(splitdir updir catdir file_name_is_absolute);
 use Cwd qw(abs_path);
 
-our $VERSION = '0.86';
+our $VERSION = '0.87';
 # the dispatcher module gets autoloaded, we list it here to
 # make sure it is available and compiles at startup time and not
 # only on demand.
@@ -35,7 +35,8 @@ sub register {
             : $app->home->rel_dir($ENV{QX_SRC_PATH} || catdir(updir,'frontend','source'))
         );
         $app->log->info("Runnning in QX_SRC_MODE with files from $qx_app_src");
-
+        # do NOT ship from public in dev mode
+        $app->static->paths([]);
         my %prefixCache;
         my $static = Mojolicious::Static->new();
         my $static_cb = sub {
