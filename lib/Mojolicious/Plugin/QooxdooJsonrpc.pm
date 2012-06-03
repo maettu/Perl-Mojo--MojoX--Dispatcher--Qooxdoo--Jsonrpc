@@ -35,8 +35,7 @@ sub register {
             : $app->home->rel_dir($ENV{QX_SRC_PATH} || catdir(updir,'frontend','source'))
         );
         $app->log->info("Runnning in QX_SRC_MODE with files from $qx_app_src");
-        # do NOT ship from public in dev mode
-        $app->static->paths([]);
+        $app->static->paths([$qx_app_src]);
         my %prefixCache;
         my $static = Mojolicious::Static->new();
         my $static_cb = sub {
