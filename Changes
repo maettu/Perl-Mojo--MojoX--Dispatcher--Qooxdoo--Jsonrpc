@@ -1,6 +1,6 @@
 Revision history for Perl extension MojoX-Dispatcher-Qooxdoo-Jsonrpc:
  
-        add make source mode work even when prefix in /  
+0.88    add make source mode work even when prefix in /  
  
 0.87    make sure we do not ship from 'public' in QX_SRC_MODE
 
