@@ -36,7 +36,7 @@ $t->post_ok('/jsonrpc','{"id":1,"service":"rpc","method":"echo","params":["hello
   ->json_content_is({id=>1,result=>'hello'},'proper response');
 
 $t->get_ok('/jsonrpc?_ScriptTransport_id=1;_ScriptTransport_data={"id":1,"service":"rpc","method":"echo","params":["hello"]}')
-  ->content_is('qx.io.remote.transport.Script._requestFinished( 1, {"id":"1","result":"hello"});','proper response')
+  ->content_like(qr/qx.io.remote.transport.Script._requestFinished/, 'proper get response')
   ->content_type_is('application/javascript; charset=utf-8')
   ->status_is(200);
 
