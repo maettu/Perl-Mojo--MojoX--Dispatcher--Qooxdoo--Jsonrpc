@@ -7,6 +7,7 @@ use Mojo::JSON;
 use Mojo::Base 'Mojolicious::Controller';
 use Encode;
 
+
 our $toUTF8 = find_encoding('utf8');
 
 our $VERSION = '0.89';
@@ -53,9 +54,8 @@ sub dispatch {
         $self->render(text => $error, status=>500);
         return;
     }        
-
     if (not defined $id){
-        my $error = "This is not a JsonRPC request.";
+        my $error = "Missing 'id' property in JsonRPC request.";
         $log->error($error);
         $self->render(text => $error, status=>500);
         return;
